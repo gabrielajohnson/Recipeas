@@ -1,0 +1,30 @@
+{% extends "recipes/layout.html" %}
+{% load static %}
+{% load recipes_extras %}
+
+{% block body %}
+    <div class = "container">
+        <div id ="homepage" class = "row">
+        <!--If there are no recipes, display this message-->
+        {% if recipes|length == 0 %}
+            <p>There are no recipes</p>
+        {% endif %}
+        <!--Display all recipes-->
+        {% for recipe in recipes %}
+            <div class="card p-0 m-1 col-sm-4 recipe-card">
+              <img class="card-img-top" src="{{recipe.image}}">
+              <div class="card-body">
+                <h5 class="card-title"><a href="{% url 'viewrecipe' recipe.id %}">{{recipe.title}}</a></h5>
+                <p class="card-title"><a href="{% url 'profile' recipe.user.id %}">{{recipe.user}}</a></p>
+                <p class="card-text">{{recipe.description}}</p>
+                {% if user.is_authenticated and recipe.user == user %}
+                    <a href="{% url 'editrecipe' recipe.id %}" class = "btn btn-danger mb-3">Edit Recipe</a>    
+                {% endif %} 
+              </div>
+            </div>
+        {% endfor %}
+        </div>
+
+    </div>
+
+{% endblock %}

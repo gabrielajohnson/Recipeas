@@ -1,0 +1,31 @@
+{% extends "recipes/layout.html" %}
+{% load static %}
+{% load recipes_extras %}
+
+{% block body %}
+    <div class = "container">
+        <h1>{{ recipeList.name }}</h1>
+        <h2 class="card-title"><a href="{% url 'profile' recipeList.user.id %}">{{recipeList.user}}</a></h2>
+        <div class = "row">
+        <!--If no recipes generate this message-->
+        {% if recipes|length == 0 %}
+            <p>There are no recipes here</p>
+        {% endif %}
+        <!--Generate recipes-->
+        {% for recipe in recipes %}
+            <div class="card p-0 m-1 col-sm-4 recipe-card">
+              <img class="card-img-top" src="/{{recipe.image}}">
+              <div class="card-body">
+                <h5 class="card-title"><a href="{% url 'viewrecipe' recipe.id %}">{{recipe.title}}</a></h5>
+                <p class="card-title"><a href="{% url 'profile' recipe.user.id %}">{{recipe.user}}</a></p>
+                <p class="card-text">{{recipe.description}}</p>
+              </div>
+            </div>
+        {% endfor %}
+        </div>
+
+    </div>
+
+{% endblock %}
+
+

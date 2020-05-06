@@ -1,0 +1,62 @@
+{% extends "recipes/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+<div class ="container" style="height:100%;">
+<div class = "category row">
+    	<nav class="nav flex-column col-md-3 p-0 bg-light desktop">
+    		<ul class = "navbar-nav mr-auto pl-4">
+			{% for category in categories %}
+				<li class="nav-item">
+		    		<a href = "{% url 'getcategory' category.id %}" class="nav-link">{{ category }}</a>
+		    	</li>
+	        {% endfor %}
+	       	</ul>
+		</nav>
+		<nav class="nav flex-column col-md-3 p-0 bg-light mobile">
+    		<ul class = "navbar-nav mr-auto pl-4">
+    		<form action="{% url 'getcategory' %}" method="post">
+    			{% csrf_token %}
+	    		<select name="category">
+        <!--Generate Category options-->
+				{% for category in categories %}
+					{% if category.id == currentCategory.id %}
+			    		<option value = "{{category.id}}" selected>{{ category }}</option>
+					{% else %}
+						<option value = "{{category.id}}">{{ category }}</option>
+					{% endif %}
+		        {% endfor %}
+		       	</select>
+		       	<input type="submit" value="Filter" class="btn btn-danger">
+			</form>
+	       	</ul>
+		</nav>
+    	<div class = "col-md-9">
+    		<h1>{{currentCategory.category}}</h1>
+    		{% if recipes|length == 0%}
+    			<p>There are no recipes in this category</p>
+    		{% endif %}
+          <!--Display recipes-->
+           {% for recipe in recipes %}
+            <div class="card p-0 m-1 col-sm-4">
+              <img class="card-img-top" src="/{{recipe.image}}">
+              <div class="card-body">
+                <h5 class="card-title"><a href="{% url 'viewrecipe' recipe.id %}">{{recipe.title}}</a></h5>
+                <p class="card-title"><a href="{% url 'profile' recipe.user.id %}">{{recipe.user}}</a></p>
+                <p class="card-text">{{recipe.description}}</p>
+                <!--Add edit button if user logged in and same as list-->
+                {% if user.is_authenticated and recipe.user == user %}
+                    <a href="{% url 'editrecipe' recipe.id %}" class = "btn btn-danger mb-3">Edit Recipe</a>    
+                {% endif %} 
+              </div>
+            </div>
+           {% endfor %}
+        </div>
+
+    </div>
+    	</div>
+</div>
+</div>
+
+{% endblock %}

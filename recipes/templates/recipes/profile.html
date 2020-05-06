@@ -1,0 +1,68 @@
+{% extends "recipes/layout.html" %}
+{% load static %}
+{% load recipes_extras %}
+
+{% block body %}
+    <div class = "container">
+        <!--Display cureent profile user-->
+        <h1>{{currentUser}}</h1>
+        <hr>
+        <h2>Recipes</h2>
+        <div class = "row">
+        {% if recipes|length == 0 %}
+            <p>There are no recipes here</p>
+        {% endif %}
+        <!--Display recipes-->
+        {% for recipe in recipes %}
+            <div class="card p-0 m-1 col-sm-4 recipe-card">
+              <img class="card-img-top" src="/{{recipe.image}}">
+              <div class="card-body">
+                <h5 class="card-title"><a href="{% url 'viewrecipe' recipe.id %}">{{recipe.title}}</a></h5>
+                <p class="card-title"><a href="{% url 'profile' recipe.user.id %}">{{recipe.user}}</a></p>
+                <p class="card-text">{{recipe.description}}</p>
+                {% if user.is_authenticated and recipe.user == user %}
+                    <a href="{% url 'editrecipe' recipe.id %}" class = "btn btn-danger mb-3">Edit Recipe</a>    
+                {% endif %} 
+              </div>
+            </div>
+        {% endfor %}
+        </div>
+        <h2>My Recipe Lists</h2>
+        <div class = "row">
+        {% if recipeList|length == 0 %}
+            <p>There are no recipe lists here</p>
+        {% endif %}
+        <!--Display recipe lists-->
+        {% for list in recipeList %}
+            <div class="card p-0 m-1 col-sm-4 recipe-card">
+              <div class="card-body">
+                <h5 class="card-title"><a href="{% url 'viewrecipelist' list.id %}">{{list.name}}</a></h5>
+                <!--Add edit button if user logged in and same as list-->
+                {% if user.is_authenticated and list.user == user  %}
+                    <button data-id="{{list.id}}" class="btn btn-danger edit-list-button">Edit List</button>
+                {% endif %}
+              </div>
+            </div>
+        {% endfor %}
+        </div>
+        <h2>My Reviews</h2>
+        <div class = "row">
+        {% if reviews|length == 0 %}
+            <p>There are no reviews here</p>
+        {% endif %}
+        <!--Display reviews-->
+        {% for review in reviews %}
+            <div class="card p-0 m-1 col-sm-4 recipe-card">
+              <div class="card-body">
+                <h5 class="card-title"><a href="{% url 'viewrecipe' review.recipe.id %}">{{review.recipe.title}}</a></h5>
+                <p>{{review.rating}} out of 5 stars</p>
+                <p>{{review.review}}</p>
+              </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}
+
+

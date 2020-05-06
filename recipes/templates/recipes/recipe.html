@@ -1,0 +1,139 @@
+{% extends "recipes/layout.html" %}
+{% load static %}
+{% load recipes_extras %}
+
+{% block body %}
+    <div class = "container">
+    	<h3>{{recipe.title}}</h3>
+    	<p class="card-title"><a href="{% url 'profile' recipe.user.id %}">{{recipe.user}}</a></p>
+    	<div class = "row">
+    	{% if user.is_authenticated %}
+    		<button id="add-review-button" class="btn btn-danger m-1 col-sm-3 col-md-2">Add Review</button>
+    		<button id="add-to-list-button" class = "btn btn-danger m-1 col-sm-3 col-md-2">Add to List</button>
+    	{% endif %}
+    		<button id="view-reviews-button" class = "btn btn-danger m-1 col-sm-3 col-md-2">View Reviews</button>
+    	</div>
+    	<!--Display this message if no reviews-->
+    	{% if starReview == 0 %}
+    		<p>No reviews have made</p>
+    	{% else %}
+    		<p>{{ starReview }} out of 5 stars</p>
+    	{% endif %}
+    	<div>Description: {{recipe.description}}</div>
+    	<div class="row col-md-6"><img src="/{{recipe.image}}"/></div>
+        <div>Preptime: {{recipe.preptime}}</div>
+        <div>Cooktime: {{recipe.cooktime}}</div>
+        <h3>Ingredients</h3>
+        <!--Filters ingredients and steps so they print in a numbered list-->
+       	<ol>
+            {% autoescape off %}
+                {{recipe.ingredients|formatlines}}
+            {% endautoescape %}
+        </ol>
+        <h3>Steps</h3>
+        <ol>
+        {% autoescape off %}
+        	{{recipe.steps|formatlines}}
+        {% endautoescape %}
+        </ol>
+
+        {% if recipe.inspiration %}
+        <p>Inspired by: <a href = "{% url 'viewrecipe' recipe.inspiration.id %}">{{recipe.inspiration.title}}</a></p>
+        {% endif %}
+        {% if user.is_authenticated and recipe.user == user %}
+        	<a href="{% url 'editrecipe' recipe.id %}" class = "btn btn-danger mb-3">Edit Recipe</a>	
+        {% endif %}	
+        {% if user.is_authenticated %}
+        <div class = "addcomment">
+	        <form action="{% url 'addcomment' recipe.id %}" method="post">
+	        	{% csrf_token %}
+	        	{{ commentForm }}
+	        	<input class="btn btn-danger mt-3" type="submit" value="Post Comment">
+	    	</form>
+	    </div>
+	    {% endif %}
+	    <!--Display comments-->
+	    <div class = "comments">
+	    	{% for comment in comments %}
+	    		<div>
+	    			<h5>{{ comment.user }}</h5>
+	    			<p>{{ comment.comment }}</p>
+	    			<p>{{ comment.timestamp }}</p>
+	    		</div>
+	    		<hr>
+	    	{% endfor %}
+	    </div>
+    </div>
+
+	<!--Add review modal form-->
+    <div id = "add-review" class="modal">
+    	<div class = "close-bar">
+    		<button class="close-modal btn btn-danger">X</button>
+    	</div>
+    	<div class = "form-container">
+	    	<form action="{% url 'addreview' recipe.id %}" method="post">
+		        {% csrf_token %}
+		        <div class = "rating-stars">
+			        <label class="star-container">
+					  <input type="radio" checked="checked" id = "star1" name="rating" value="1">
+					  <span class="checkmark"></span>
+					</label>
+					<label class="star-container">
+					  <input type="radio" name="rating" id = "star2" value="2">
+					  <span class="checkmark"></span>
+					</label>
+					<label class="star-container">
+					  <input type="radio" name="rating" id = "star3" value="3">
+					  <span class="checkmark"></span>
+					</label>
+					<label class="star-container">
+					  <input type="radio" name="rating" id = "star4" value="4">
+					  <span class="checkmark"></span>
+					</label>
+					<label class="star-container">
+					  <input type="radio" name="rating" id = "star5" value="5">
+					  <span class="checkmark"></span>
+					</label>
+				</div>
+		        {{ reviewForm }}
+		        <input class="btn btn-danger" type="submit" value="Post Review">
+		   	</form>
+	   </div>
+    </div>
+
+	<!--View reviews modal-->
+    <div id = "view-reviews" class="modal">
+    	<div class = "close-bar">
+    		<button class="close-modal btn btn-danger">X</button>
+    	</div>
+    	<div class = "review-container">
+    	{% if reviews|length == 0%}
+    		<p>There are no reviews yet</p>
+    	{% endif %}
+	    {% for review in reviews %}
+	    	<div class = "p-1 card">
+	    		<p font-weight-bold>{{ review.user }}</p>
+	    		<p>Rating: {{ review.rating }}</p>
+	    		<p class = "card-body">{{ review.review }}</p>
+	    	</div>
+	    {% endfor %}
+	   	</div>
+    </div>
+
+	<!--Add to list-->
+    <div id = "add-to-list" class="modal">
+    	<div class = "close-bar">
+    		<button class="close-modal btn btn-danger">X</button>
+    	</div>
+	    <div class = "form-container">
+	        <h1>Add to List</h1>
+	        <form action="{% url 'addtolist' recipe.id %}" method="post">
+	        	{% csrf_token %}
+	        	{{ addToListForm }}
+	        	<input class="btn btn-danger" type="submit" value="Add to List">
+	    	</form>
+	    </div>
+    </div>
+
+
+{% endblock %}

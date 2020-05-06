@@ -1,0 +1,56 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}Recipeas{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="{% static 'recipes/styles.css' %}" rel="stylesheet">
+        {% block script %}
+            <script src="{% static 'recipes/script.js' %}"></script>
+        {% endblock %}
+    </head>
+    <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light p-0">
+            <div class="col-md-12 p-0">
+
+            <div class="row col-md-6"><img src="{% static 'images/recipeas_logo1.png' %}"/></div>
+              <ul class="navbar-nav mr-auto main-menu">
+                <li class="nav-item">
+                  <a id="all-posts-link" class="nav-link" href="{% url 'index' %}">All Recipes</a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a id="user-profile-link" class="nav-link" href="{% url 'profile' user.id %}"><strong>My Profile</strong></a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="user-profile-link" class="nav-link" href="{% url 'addrecipe' %}">Add Recipe</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'createlist' %}">Create List</a>
+                    </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'categories' %}">Categories</a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
+                {% endif %}
+              </ul>
+            </div>
+        </nav>
+        <div class="body">
+            {% block body %}
+            {% endblock %}
+        </div>
+    </body>
+</html>

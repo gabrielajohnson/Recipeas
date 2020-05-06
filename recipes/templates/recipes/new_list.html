@@ -1,0 +1,33 @@
+{% extends "recipes/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <div class = "container">
+        <h1>Create List</h1>
+        <!--Create Recipe List-->
+        <form action="{% url 'createlist' %}" method="post">
+        	{% csrf_token %}
+        	{{ form }}
+        	<input class="btn btn-danger mt-3" type="submit" value="Save List">
+    	</form>
+        <!--List all recipe lists that belong to user-->
+    	<h2>My Recipe Lists</h2>
+        <div class = "row">
+        <!--If no lists have been created, display this message-->
+        {% if recipeList|length == 0 %}
+    			<p>You have created no recipe lists</p>
+    	{% else %}
+        {% for list in recipeList %}
+            <div class="card p-0 m-1 col-sm-4 recipe-card">
+              <div class="card-body">
+                <h5 class="card-title"><a href="{% url 'viewrecipelist' list.id %}">{{list.name}}</a></h5>
+                <!--Only display edit button if the user is logged in and it is their list-->
+                {% if user.is_authenticated and list.user == user  %}
+                	<button data-id="{{list.id}}" class="btn btn-danger edit-list-button">Edit List</button>
+                {% endif %}
+              </div>
+            </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}

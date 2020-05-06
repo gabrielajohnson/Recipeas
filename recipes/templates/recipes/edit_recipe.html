@@ -1,0 +1,14 @@
+{% extends "recipes/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <div class = "container">
+        <h1>Edit Recipe</h1>
+        <!--Display Edit Recipe form-->
+        <form action="{% url 'editrecipe' recipe_id %}" method="post" enctype="multipart/form-data">
+        	{% csrf_token %}
+        	{{ form }}
+        	<input class="btn btn-danger mt-3" type="submit" value="Save Recipe">
+    	</form>
+    </div>
+{% endblock %}
