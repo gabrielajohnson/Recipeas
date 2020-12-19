@@ -1,3 +1,2 @@
-django
-gunicorn
-django-heroku
+python -m pip install Pillow
+python -m pip install psycopg2-binary
