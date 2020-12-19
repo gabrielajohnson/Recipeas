@@ -16,6 +16,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # or, eg,
 #MEDIA_ROOT = os.path.join(BASE_DIR,'recipes')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR,'')
 
 # Quick-start development settings - unsuitable for production
