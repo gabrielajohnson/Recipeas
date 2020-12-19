@@ -1,0 +1,157 @@
+html, body{
+	height:100%;
+}
+
+body{
+	min-height:100%;
+}
+
+.body{
+    height: 80%;
+}
+
+img{
+	width:100%;
+}
+
+.recipe-card{
+	width:auto;
+}
+
+/*Category*/
+.mobile{
+	display:none;
+	height:50px;
+}
+
+.category.row{
+	height:100%;
+}
+
+/*modal*/
+.modal{
+	position:fixed;
+	top:25%;
+	background: white;
+	border: 0.5px solid gray;
+	box-shadow: 0px 0px 10px #ddd;
+	border-radius: 10px;
+	margin: auto;
+	left: 0;
+	right: 0;
+	width: 75%;
+	min-width: 300px;
+}
+
+
+.form-container{
+	width: 80%;
+	margin: auto;
+	padding: 10px;
+}
+
+#add-to-list{
+	height: 50%;
+}
+
+/* Rating container: Star CSS */
+.rating-stars{
+	display: flex;
+	height:40px;
+}
+
+.star-container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  cursor: pointer;
+}
+
+.main-menu{
+	background:orange;
+}
+
+/* Hide the browser's default radio button */
+.star-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background: grey;
+  border-radius: 50%;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+/* On hover, add a gold background color */
+.star-container:hover input ~ .checkmark {
+  background: gold;
+}
+
+/* When the radio button is checked, add a gold background */
+.star-container input:checked ~ .checkmark {
+  background: gold;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.star-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.star-container .checkmark:after {
+ 	top: 9px;
+	left: 9px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: gold;
+}
+
+#view-reviews{
+	top: 5%;
+	height:90%;
+}
+
+.review-container{
+	height:80%;
+	overflow-y:auto;
+}
+
+/*Close Bar*/
+.close-bar{
+	background: lightgray;
+}
+
+
+@media (min-width: 500px) {
+	.recipe-card{
+		width:32%;
+	}
+}
+
+@media only screen and (max-width: 700px) {
+
+  .category.row{
+	height:auto;
+  }
+
+  .desktop {
+    display:none;
+  }
+
+  .mobile{
+  	display:block;
+  }
+}
