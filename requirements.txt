@@ -1,2 +1,2 @@
 Pillow
-python -m pip install psycopg2-binary
+psycopg2-binary
