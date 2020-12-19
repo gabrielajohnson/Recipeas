@@ -16,7 +16,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # or, eg,
 #MEDIA_ROOT = os.path.join(BASE_DIR,'recipes')
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_ROOT = os.path.join(BASE_DIR,'')
 
 # Quick-start development settings - unsuitable for production
@@ -127,3 +127,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 #MEDIA_ROOT = '/images/'
 MEDIA_URL = '/images/'
+
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
