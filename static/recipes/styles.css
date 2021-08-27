@@ -1,3 +1,8 @@
+:root {
+  --mainRed: #d00000;
+
+}
+
 html, body{
 	height:100%;
 }
@@ -7,15 +12,34 @@ body{
 }
 
 .body{
-    height: 80%;
+    padding-top: 76px;
 }
 
 img{
 	width:100%;
 }
 
+.nav-header{
+	height: 50px;
+	width:  auto;
+}
+
 .recipe-card{
 	width:auto;
+}
+
+.card-img-container img{
+	object-fit: cover;
+    height: 180px;
+}
+
+.card-text{
+	overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    height: 48px;
 }
 
 /*Category*/
@@ -68,13 +92,8 @@ img{
 }
 
 .main-menu{
-	background:orange;
-}
-
-/*navbar*/
-
-.main-menu .nav-link{
-	color: white;
+	/*background:var(--mainRed);*/
+	background: white;
 }
 
 /* Hide the browser's default radio button */
