@@ -3,10 +3,10 @@
 
 {% block body %}
 
-<div class ="container" style="height:100%;">
+<div class ="container m-0" style="height:100%;">
 <div class = "category row">
     	<nav class="nav flex-column col-md-3 p-0 bg-light desktop">
-    		<ul class = "navbar-nav mr-auto pl-4">
+    		<ul class = "navbar-nav mr-auto pl-4 position-fixed">
 			{% for category in categories %}
 				<li class="nav-item">
 		    		<a href = "{% url 'getcategory' category.id %}" class="nav-link">{{ category }}</a>

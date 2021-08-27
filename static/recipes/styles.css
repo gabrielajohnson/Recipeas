@@ -71,6 +71,12 @@ img{
 	background:orange;
 }
 
+/*navbar*/
+
+.main-menu .nav-link{
+	color: white;
+}
+
 /* Hide the browser's default radio button */
 .star-container input {
   position: absolute;
