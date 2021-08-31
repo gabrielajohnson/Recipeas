@@ -3,3 +3,4 @@ gunicorn
 django-heroku
 Pillow
 psycopg2-binary
+whitenoise
