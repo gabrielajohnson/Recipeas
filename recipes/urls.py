@@ -13,6 +13,7 @@ urlpatterns = [
     path("addrecipe", views.add_recipe, name="addrecipe"),
     path("editrecipe/<int:recipe_id>", views.edit_recipe, name="editrecipe"),
     path("recipe/<int:recipe_id>", views.view_recipe, name="viewrecipe"),
+    path("deleterecipe/<int:recipe_id>", views.delete_recipe, name="deleterecipe"),
 
     # Add comment and review paths
     path("addcomment/<int:recipe_id>", views.add_comment, name="addcomment"),

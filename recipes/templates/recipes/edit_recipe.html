@@ -10,5 +10,6 @@
         	{{ form }}
         	<input class="btn btn-danger mt-3" type="submit" value="Save Recipe">
     	</form>
+            <a href="{% url 'deleterecipe' recipe_id %}" class="btn btn-danger">Delete Recipe</a>
     </div>
 {% endblock %}

@@ -235,6 +235,26 @@ def edit_recipe(request, recipe_id):
     except Recipe.DoesNotExist:
         return JsonResponse({"error": "Recipe not found."}, status=404)
 
+@login_required
+def delete_recipe(request, recipe_id):
+    try:
+        # Check if recipe exists
+        recipe = Recipe.objects.get(id=recipe_id)
+        if request.user == recipe.user:
+            Recipe.objects.filter(id=recipe_id).delete()
+            return HttpResponseRedirect(reverse("index"))
+            #return render(request, "recipes/edit_recipe.html", {
+            #    "recipe_id": recipe_id,
+            #    "form": RecipeForm(instance=recipe)
+            #})
+        else:
+            # First time going to form, render new form
+            return render(request, "recipes/edit_recipe.html", {
+                "recipe_id": recipe_id,
+                "form": RecipeForm(instance=recipe)
+            })
+    except Recipe.DoesNotExist:
+        return JsonResponse({"error": "Recipe not found."}, status=404)
 
 def view_recipe(request, recipe_id):
     try:

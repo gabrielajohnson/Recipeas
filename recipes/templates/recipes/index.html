@@ -12,6 +12,8 @@
         {% if recipes|length == 0 %}
             <p>There are no recipes</p>
         {% endif %}
+
+        <img src="{% static 'images/tumblr_aaae599f54384ebcc3683b4ae2a5770a_d13b6352_1280.jpg' %}" alt="Hi!" />
         <!--Display all recipes-->
         {% for recipe in recipes %}
             <div class="col-sm-4">
