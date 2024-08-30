@@ -30,6 +30,15 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	}
 
+
+	// Edit Recipe Form
+	if(document.querySelector("#delete-recipe")){
+		// Open and close delete recipe modal
+		document.querySelector("#delete-recipe").style.display = "none";
+		document.querySelector("#delete-recipe-button").addEventListener("click",deleteRecipe);
+		document.querySelector("#delete-recipe .close-bar .close-modal").addEventListener("click", closeModal);
+	}
+
 	// Captures all edit buttons on page
 	let editButtons = document.querySelectorAll(".edit-list-button");
 	
@@ -119,7 +128,6 @@ function editRecipeList(){
 		fetch('/editlist/' + recipeListId + '/status')
 		.then(response => response.json())
 		.then(status=> {
-			console.log("hi" + status.status);
 			if(status.status){
 				publicStatus.checked = true;
 			}
@@ -138,10 +146,17 @@ function editRecipeList(){
 		cancel.addEventListener("click",() => cancelEdit(cancel,this.parentNode));
 		cancel.classList.add("btn","btn-outline-danger","m-1");
 
+		// Creates delete list button so the user can cancel the changes and revert the post back to its prior state
+		let deleteList = document.createElement("button");
+		deleteList.innerHTML = "Delete List";
+		deleteList.addEventListener("click",() => deleteRecipeList(this.parentNode,editTextbox,recipeListId));
+		deleteList.classList.add("btn","btn-outline-danger","m-1");
+
 		// All elements are appended to the form
 		editForm.append(editTextbox);
 		editForm.append(publicStatus);
 		editForm.append(saveChanges);
+		editForm.append(deleteList);
 		editForm.append(cancel);
 
 		// Hides original post text and appends editForm for user to view
@@ -172,8 +187,27 @@ async function saveRecipeList(listContainer,editTextbox,recipeListId,publicStatu
 	listContainer.querySelector("h5 a").innerText = newContent;
 }
 
+async function deleteRecipeList(listContainer,editTextbox,recipeListId){
+
+	await fetch('/deletelist/' + recipeListId)
+    	.then(response => response.json())
+    	.then(data => {
+      	console.log(data);
+	});
+
+    // Removes textbox form after save
+    editTextbox.parentNode.remove();
+	listContainer.querySelector("h5").style.display = "block";
+	listContainer.querySelector("h5 a").innerText = newContent;
+}
+
 function cancelEdit(cancel,listContainer){
 	// Cancel edit, will remove editForm and display original post text
 	cancel.parentNode.remove();
 	listContainer.querySelector("h5").style.display = "block";
+}
+
+// Opens View Reviews Modal
+function deleteRecipe(){
+	document.querySelector("#delete-recipe").style.display = "block";
 }

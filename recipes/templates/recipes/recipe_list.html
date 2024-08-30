@@ -19,6 +19,7 @@
                 <h5 class="card-title"><a href="{% url 'viewrecipe' recipe.id %}">{{recipe.title}}</a></h5>
                 <p class="card-title"><a href="{% url 'profile' recipe.user.id %}">{{recipe.user}}</a></p>
                 <p class="card-text">{{recipe.description}}</p>
+                <a href="{% url 'deleterecipefromlist' recipeList.id recipe.id %}">Delete from list</a>
               </div>
             </div>
         {% endfor %}

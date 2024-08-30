@@ -2,21 +2,18 @@
 {% load static %}
 {% load recipes_extras %}
 
-{% block body %}
-    <!--<div class="featured-image">
-        <img src="{% static 'images/cookie_sundae.jpeg'%}">
-    </div>-->
-    <div class = "container-fluid">
-        <div id ="homepage" class = "row">
-        <!--If there are no recipes, display this message-->
-        {% if recipes|length == 0 %}
-            <p>There are no recipes</p>
-        {% endif %}
+{% block title %}
+    Search Results
+{% endblock %}
 
-        <!--<img class = "homepage-hero" src="{% static 'images/baked-ravioli-recipe-1.jpeg' %}" alt="Hi!" />-->
-        <!--Display all recipes-->
-        {% for recipe in recipes %}
-            <div class="col-sm-4 pt-2">
+{% block body %}
+    <h1>Search Results</h1>
+
+    <div class = "container-fluid">
+        <div class = "row">
+        {% if searchresults %}   
+            {% for recipe in searchresults %}
+            <div class="col-sm-4">
               <div class = "card p-0 col-md-12">
                   <div class = "card-img-container">
                     <img class="card-img-top" src="{{recipe.image}}">
@@ -33,7 +30,9 @@
             </div>
         {% endfor %}
         </div>
-
     </div>
+    {% else %} 
+        <p>There are no search results</p>
+    {% endif %}
 
 {% endblock %}

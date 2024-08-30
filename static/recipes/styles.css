@@ -42,6 +42,12 @@ img{
     height: 48px;
 }
 
+/*homepage*/
+.homepage-hero{
+	height: 400px;
+    object-fit: cover;
+}
+
 /*Category*/
 .mobile{
 	display:none;
@@ -150,6 +156,16 @@ img{
 }
 
 .review-container{
+	height:80%;
+	overflow-y:auto;
+}
+
+#delete-recipe{
+	top: 5%;
+	height:90%;
+}
+
+.delete-recipe-container{
 	height:80%;
 	overflow-y:auto;
 }

@@ -10,6 +10,19 @@
         	{{ form }}
         	<input class="btn btn-danger mt-3" type="submit" value="Save Recipe">
     	</form>
-            <a href="{% url 'deleterecipe' recipe_id %}" class="btn btn-danger">Delete Recipe</a>
+    <button id="delete-recipe-button" class = "btn btn-danger mt-3">Delete Recipe</button>
+    <!--Delete Recipe modal-->
+        <div id = "delete-recipe" class="modal">
+            <div class = "close-bar">
+                <button class="close-modal btn btn-danger">X</button>
+            </div>
+            <div class = "delete-recipe-container">
+                <p>Are you sure you would like to delete this recipe?</p>
+                <div class = "p-1 card">
+                    <a href="{% url 'deleterecipe' recipe_id %}" class="btn btn-danger">Delete Recipe</a>
+                </div>
+            </div>
+        </div>
+
     </div>
 {% endblock %}

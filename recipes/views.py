@@ -242,11 +242,7 @@ def delete_recipe(request, recipe_id):
         recipe = Recipe.objects.get(id=recipe_id)
         if request.user == recipe.user:
             Recipe.objects.filter(id=recipe_id).delete()
-            return HttpResponseRedirect(reverse("index"))
-            #return render(request, "recipes/edit_recipe.html", {
-            #    "recipe_id": recipe_id,
-            #    "form": RecipeForm(instance=recipe)
-            #})
+            return redirect("profile", user_id=request.user.id)
         else:
             # First time going to form, render new form
             return render(request, "recipes/edit_recipe.html", {
@@ -313,6 +309,16 @@ def add_comment(request, recipe_id):
     except Recipe.DoesNotExist:
         return JsonResponse({"error": "Recipe not found."}, status=404)
 
+@login_required
+def delete_comment(request, comment_id):
+    try:
+        # Check if recipe exists
+        comment = Comment.objects.get(id=comment_id)
+        if request.user == comment.user:
+            Comment.objects.filter(id=comment_id).delete()
+            return redirect(request.META['HTTP_REFERER'])
+    except Comment.DoesNotExist:
+        return JsonResponse({"error": "Comment not found."}, status=404)
 
 @login_required
 def add_review(request, recipe_id):
@@ -337,6 +343,16 @@ def add_review(request, recipe_id):
     else:
         return redirect("viewrecipe", recipe_id=recipe_id)
 
+@login_required
+def delete_review(request, review_id):
+    try:
+        # Check if recipe exists
+        review = Review.objects.get(id=review_id)
+        if request.user == review.user:
+            Review.objects.filter(id=review_id).delete()
+            return redirect(request.META['HTTP_REFERER'])
+    except Review.DoesNotExist:
+        return JsonResponse({"error": "Review not found."}, status=404)
 
 def categories(request):
     # Generates categories in category page
@@ -413,6 +429,17 @@ def create_list(request):
 
 
 @login_required
+def delete_list(request, recipeList_id):
+    try:
+        recipeList = RecipeList.objects.get(id=recipeList_id)
+        if request.user == recipeList.user:
+            RecipeList.objects.filter(id=recipeList_id).delete()
+            return redirect(request.META['HTTP_REFERER'])
+    except RecipeList.DoesNotExist:
+        return HttpResponse(status=204)
+
+
+@login_required
 def edit_list(request, recipeList_id):
     # Get recipe list user is editing
     try:
@@ -477,6 +504,16 @@ def add_to_list(request, recipe_id):
     else:
         return redirect("viewrecipe", recipe_id=recipe_id)
 
+@login_required
+def delete_recipe_from_list(request, recipeList_id, recipe_id):
+    try:
+        recipeList = RecipeList.objects.get(id=recipeList_id)
+        recipe = Recipe.objects.get(id=recipe_id)
+        if request.user == recipeList.user:
+            recipeList.recipes.remove(recipe)
+        return redirect("viewrecipelist", list_id=recipeList_id)
+    except RecipeList.DoesNotExist:
+        return HttpResponse(status=204)
 
 def profile(request, user_id):
     try:
@@ -491,13 +528,15 @@ def profile(request, user_id):
             recipes = Recipe.objects.filter(user=user, public=True)
             recipeList = RecipeList.objects.filter(user=user, public=True)
         reviews = Review.objects.filter(user=user)
+        comments = Comment.objects.filter(user=user)
 
         # Render profile with created recipes, recipeList,reviews
         return render(request, "recipes/profile.html", {
             "currentUser": user,
             "recipes": recipes,
             "recipeList": recipeList,
-            "reviews": reviews
+            "reviews": reviews,
+            "comments": comments
         })
     except User.DoesNotExist:
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
@@ -515,3 +554,21 @@ def view_recipe_list(request, list_id):
         })
     except User.DoesNotExist:
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+def search(request):
+    if request.method == "GET":
+        searchresults = []
+        recipes = Recipe.objects.filter(public=True)
+        if(request.user.is_authenticated):
+            user_recipes = Recipe.objects.filter(user=request.user, public=False)
+            recipes.append(user_recipes)
+        titletext = request.GET['q']
+        for recipe in recipes:
+            if((recipe.title.lower()).find(titletext.lower()) >= 0):
+                searchresults.append(recipe)
+        #Each query to recipe match is saved to an array here and displayed on the search results page
+        return render(request, "recipes/search_results.html", {
+            "searchresults": searchresults
+        })
+    else:
+        return redirect(request.META['HTTP_REFERER'])

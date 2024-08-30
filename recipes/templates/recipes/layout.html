@@ -57,8 +57,11 @@
                     <a class="nav-link" href="{% url 'register' %}">Register</a>
                 </li>
             {% endif %}
-
         </ul>
+            <form action = "{% url 'search' %}" method="get">
+                <input class="search" type="text" name="q" placeholder="Search Recipes">
+                <input type = "submit" value="Search">
+            </form>
       </div>
     </nav>
 
