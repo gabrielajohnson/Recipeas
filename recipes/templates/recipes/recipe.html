@@ -3,26 +3,36 @@
 {% load recipes_extras %}
 
 {% block body %}
-    <div class = "container">
-    	<h3>{{recipe.title}}</h3>
-    	<p class="card-title"><a href="{% url 'profile' recipe.user.id %}">{{recipe.user}}</a></p>
-    	<div class = "row">
-    	{% if user.is_authenticated %}
-    		<button id="add-review-button" class="btn btn-danger m-1 col-sm-3 col-md-2">Add Review</button>
-    		<button id="add-to-list-button" class = "btn btn-danger m-1 col-sm-3 col-md-2">Add to List</button>
-    	{% endif %}
-    		<button id="view-reviews-button" class = "btn btn-danger m-1 col-sm-3 col-md-2">View Reviews</button>
+    <div class = "container recipe">
+    	<div class="row flex-sm-row-reverse">
+    	<div class="col-md-6 main-image"><img src="/{{recipe.image}}"/></div>
+    	<div class = "col-md-6 recipe-details">
+    		<h3>{{recipe.title}}</h3>
+    		<p class="card-title recipe-creator"><a href="{% url 'profile' recipe.user.id %}">{{recipe.user}}</a></p>
+    		<!--Display this message if no reviews-->
+    		{% if starReview == 0 %}
+    			<p>No reviews have been made</p>
+    		{% else %}
+    			<img id="star-rating" src="{% static 'images/star-ratings.png' %}" style="background:linear-gradient(90deg, #d00000 0%, #d00000 {{starReviewGraphic}}%, transparent {{starReviewGraphic}}%)">
+    			<p>{{ starReview }} out of 5 stars</p>
+    		{% endif %}
+    		<div>Description: {{recipe.description}}</div>
+    		<div class = "my-3">
+    		{% if user.is_authenticated %}
+    			<button id="add-review-button" class="btn btn-danger m-1 col-sm-12 col-md-3">Add Review</button>
+    			<button id="add-to-list-button" class = "btn btn-danger m-1 col-sm-12 col-md-3">Add to List</button>
+    		{% endif %}
+    			<button id="view-reviews-button" class = "btn btn-danger m-1 col-sm-12 col-md-3">View Reviews</button>
+    		</div>
+    		<div class = "time-banner mb-5">
+        		<div><p>PREP TIME</p><p>{{recipe.preptime}}</p></div>
+        		<div class="line"></div>
+        		<div><p>COOK TIME</p><p>{{recipe.cooktime}}</p></div>
+        		<div class="line"></div>
+        		<div><p>TOTAL TIME</p><p>{{totalTime}}</p></div>
+       		</div>
     	</div>
-    	<!--Display this message if no reviews-->
-    	{% if starReview == 0 %}
-    		<p>No reviews have made</p>
-    	{% else %}
-    		<p>{{ starReview }} out of 5 stars</p>
-    	{% endif %}
-    	<div>Description: {{recipe.description}}</div>
-    	<div class="row col-md-6"><img src="/{{recipe.image}}"/></div>
-        <div>Preptime: {{recipe.preptime}}</div>
-        <div>Cooktime: {{recipe.cooktime}}</div>
+    	</div>
         <h3>Ingredients</h3>
         <!--Filters ingredients and steps so they print in a numbered list-->
        	<ol>
@@ -36,15 +46,17 @@
         	{{recipe.steps|formatlines}}
         {% endautoescape %}
         </ol>
-
+        <div class = "recipe-inspiration line my-4"></div>
         {% if recipe.inspiration %}
         <p>Inspired by: <a href = "{% url 'viewrecipe' recipe.inspiration.id %}">{{recipe.inspiration.title}}</a></p>
         {% endif %}
         {% if user.is_authenticated and recipe.user == user %}
         	<a href="{% url 'editrecipe' recipe.id %}" class = "btn btn-danger mb-3">Edit Recipe</a>	
-        {% endif %}	
+        {% endif %}
+        <h4>Comments</h4>
+        <hr>
         {% if user.is_authenticated %}
-        <div class = "addcomment">
+        <div class = "addcomment mb-3">
 	        <form action="{% url 'addcomment' recipe.id %}" method="post">
 	        	{% csrf_token %}
 	        	{{ commentForm }}
@@ -56,7 +68,7 @@
 	    <div class = "comments">
 	    	{% for comment in comments %}
 	    		<div>
-	    			<h5>{{ comment.user }}</h5>
+	    			<h5 class="user"><a href="{% url 'profile' comment.user.id %}">{{comment.user}}</a></h5>
 	    			<p>{{ comment.comment }}</p>
 	    			<p>{{ comment.timestamp }}</p>
 	    		</div>

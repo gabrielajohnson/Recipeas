@@ -16,7 +16,7 @@
         <!--<img class = "homepage-hero" src="{% static 'images/baked-ravioli-recipe-1.jpeg' %}" alt="Hi!" />-->
         <!--Display all recipes-->
         {% for recipe in recipes %}
-            <div class="col-sm-4 pt-2">
+            <div class="col-sm-4 pt-2 recipe-page-card">
               <div class = "card p-0 col-md-12">
                   <div class = "card-img-container">
                     <img class="card-img-top" src="{{recipe.image}}">

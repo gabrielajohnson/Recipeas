@@ -39,7 +39,7 @@
                     <a id="user-profile-link" class="nav-link" href="{% url 'addrecipe' %}">Add Recipe</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'createlist' %}">Create List</a>
+                    <a class="nav-link" href="{% url 'createlist' %}">Lists</a>
                 </li>
             {% endif %}
             <li class="nav-item">
@@ -60,7 +60,7 @@
         </ul>
             <form action = "{% url 'search' %}" method="get">
                 <input class="search" type="text" name="q" placeholder="Search Recipes">
-                <input type = "submit" value="Search">
+                <input class = "btn btn-danger" type = "submit" value="Search">
             </form>
       </div>
     </nav>
@@ -71,4 +71,7 @@
             {% endblock %}
         </div>
     </body>
+    <footer class="mt-5 p-3">
+        <div><a href="https://www.gabrielajohnson.com/">Gabriela Johnson Portfolio</a></div>
+    </footer>
 </html>

@@ -178,7 +178,7 @@ def add_recipe(request):
             recipe.steps = util.format_steps(recipe.steps)
             # Get total ingredients and time
             recipe.ingredients_length = util.get_ingredient_length(recipe.ingredients)
-            recipe.total_time = util.get_total_time(recipe.preptime_initial, recipe.cooktime_initial)
+            recipe.total_time = util.format_duration(util.get_total_time(recipe.preptime_initial, recipe.cooktime_initial))
             recipe.save()
             form.save_m2m()
             return HttpResponseRedirect(reverse("index"))
@@ -216,7 +216,7 @@ def edit_recipe(request, recipe_id):
                     recipe.steps = util.format_steps(recipe.steps)
                     # Get total ingredients and time
                     recipe.ingredients_length = util.get_ingredient_length(recipe.ingredients)
-                    recipe.total_time = util.get_total_time(recipe.preptime_initial, recipe.cooktime_initial)
+                    recipe.total_time = util.format_duration(util.get_total_time(recipe.preptime_initial, recipe.cooktime_initial))
                     recipe.save()
                     form.save_m2m()
                     return redirect("index")
@@ -265,6 +265,7 @@ def view_recipe(request, recipe_id):
         comments = Comment.objects.filter(recipe=recipe_id).order_by("-timestamp")
         reviews = Review.objects.filter(recipe=recipe_id).order_by("-timestamp")
         starReview = 0
+        totalTime = 0
 
         # Check if there are reviews
         if(len(reviews) != 0):
@@ -272,8 +273,20 @@ def view_recipe(request, recipe_id):
                 starReview += review.rating
             # Get average of all ratings for recipes
             starReview = round(starReview/len(reviews), 2)
+            starReviewGraphic = starReview*20
+
+            if starReview.is_integer():
+                starReview = int(starReview)
+
         else:
-            starReview = 0
+            starReviewGraphic = 0
+
+        if(recipe.total_time > 60):
+            if(recipe.total_time > 120):
+                totalTime = str(int(recipe.total_time/60)) + " hours" + str(recipe.total_time%60) + " min"
+            totalTime = str(int(recipe.total_time/60)) + " hour " + str(recipe.total_time%60) + " min"
+        else:
+            totalTime = str(recipe.total_time) + " min"
 
         return render(request, "recipes/recipe.html", {
                 "recipe": recipe,
@@ -282,7 +295,9 @@ def view_recipe(request, recipe_id):
                 "reviewForm": reviewForm,
                 "reviews": reviews,
                 "starReview": starReview,
-                "addToListForm": addToListForm
+                "starReviewGraphic": starReviewGraphic,
+                "addToListForm": addToListForm,
+                "totalTime": totalTime
         })
     except Recipe.DoesNotExist:
         return JsonResponse({"error": "Recipe not found."}, status=404)
@@ -466,19 +481,19 @@ def edit_list(request, recipeList_id):
 
 @login_required
 def get_list_status(request, recipeList_id):
-    # get public status of recipe list
+    # get name and public status of recipe list
     try:
         recipeList = RecipeList.objects.get(id=recipeList_id)
         # Verify that logged in user is same as recipe list user
         if request.user == recipeList.user:
             # Return status of recipeList
-            return JsonResponse({"status": recipeList.public}, status=200)
+            return JsonResponse({"name": recipeList.name,"status": recipeList.public}, status=200)
     except RecipeList.DoesNotExist:
         return HttpResponse(status=204)
 
     # If not the same user, return error
     return HttpResponse({
-            "error": "You don't have permission to get this public status"
+            "error": "You don't have permission to get this name or public status"
     }, status=400)
 
 

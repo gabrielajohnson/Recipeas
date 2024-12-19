@@ -3,21 +3,23 @@
 {% load recipes_extras %}
 
 {% block body %}
-    <div class = "container">
+    <div class = "profile_menu">
+        <ul class="navbar">
+            <li class="nav-item">
+                <a class="nav-link" href="#profile_recipes">Recipes</a></li>
+            <li class="nav-item">
+                <a class="nav-link" href="#profile_lists">Recipe Lists</a></li>
+            <li class="nav-item">
+                <a class="nav-link" href="#profile_reviews">Reviews</a></li>
+            <li class="nav-item">
+                <a class="nav-link" href="#profile_comments">Comments</a></li>
+        </ul>
+    </div>
+    <div class = "container profile_container">
         <!--Display current profile user-->
         <h1>{{currentUser}}</h1>
         <hr>
-        <div class = "profile_menu">
-            <ul class="navbar">
-                <li class="nav-item">
-                    <a class="nav-link" href="#profile_recipes">Recipes</a></li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#profile_lists">Recipe Lists</a></li>
-                <li class="nav-item">Reviews</li>
-                <li class="nav-item">Comments</li>
-            </ul>
-        </div>
-        <div id="profile_recipes">
+        <div id="profile_recipes" class="profile_section">
             <h2>Recipes</h2>
             <div class = "row">
             {% if recipes|length == 0 %}
@@ -43,8 +45,8 @@
         {% endfor %}
             </div>
         </div>
-        <div id="profile_lists">
-            <h2>My Recipe Lists</h2>
+        <div id="profile_lists" class="profile_section">
+            <h2>Recipe Lists</h2>
             <div class = "row">
             {% if recipeList|length == 0 %}
                 <p>There are no recipe lists here</p>
@@ -56,55 +58,105 @@
                     <h5 class="card-title"><a href="{% url 'viewrecipelist' list.id %}">{{list.name}}</a></h5>
                     <!--Add edit button if user logged in and same as list-->
                     {% if user.is_authenticated and list.user == user  %}
-                        <button data-id="{{list.id}}" class="btn btn-danger edit-list-button">Edit List</button>
+                        <button data-list-id="{{list.id}}" class="btn btn-danger edit-list-button">Edit List</button>
                     {% endif %}
                 </div>
                 </div>
-                <!--<div class="card p-0 m-1 col-sm-4 recipe-card">
-                <div class="card-body">
-                    <h5 class="card-title"><a href="{% url 'viewrecipelist' list.id %}">{{list.name}}</a></h5>
-                    {% if user.is_authenticated and list.user == user  %}
-                        <button data-id="{{list.id}}" class="btn btn-danger edit-list-button">Edit List</button>
+            {% endfor %}
+            <div id = "edit-recipe-list" class="modal">
+                <div class = "close-bar">
+                    <button class="close-modal btn btn-danger">&#10006;</button>
+                </div>
+                <div class = "edit-recipe-list-container">
+                    <p>Edit Recipe List</p>
+                    <input type="type" id="recipe-list-name" name="list name"/>
+                    <label for="list name">Name</label>
+                    <input type="checkbox" id="list-public-status" name="public status"/>
+                    <label for="public status">Public Status</label>
+                    <div class = "col-md-12 row">
+                        <a id="delete-recipe-list" href="#" class="btn btn-danger">Delete List</a>
+                        <a id="save-recipe-list" href="#" class="btn btn-danger">Save List</a>
+                    </div>
+                </div>
+            </div> 
+            <!--Delete Review Modal-->
+            <div id = "delete-recipe-list-modal" class="modal">
+                <div class = "close-bar">
+                    <button class="close-modal btn btn-danger">&#10006;</button>
+                </div>
+                <div class = "delete-recipe-list-container">
+                    <p>Are you sure you would like to delete this review?</p>
+                    <div class = "p-1 card">
+                        <a id="confirm-delete-recipe-list" href="#" class="btn btn-danger">Delete Recipe List</a>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div id="profile_reviews" class="profile_section">
+            <h2>Reviews</h2>
+            <div class = "row">
+            {% if reviews|length == 0 %}
+                <p>There are no reviews here</p>
+            {% endif %}
+            <!--Display reviews-->
+            {% for review in reviews %}
+                <div class="col-sm-4 pt-2 recipe-card">
+                <div class="card card-body">
+                    <h5 class="card-title"><a href="{% url 'viewrecipe' review.recipe.id %}">{{review.recipe.title}}</a></h5>
+                    <p>{{review.rating}} out of 5 stars</p>
+                    <p>{{review.review}}</p>
+                    {% if user.is_authenticated and review.user == user  %}
+                        <button class="delete-review-button btn btn-danger mt-3" data-review-id="{{review.id}}">Delete Review</button>
                     {% endif %}
                 </div>
-                </div>-->
+                </div>
             {% endfor %}
             </div>
-        </div>
-        <h2>My Reviews</h2>
-        <div class = "row">
-        {% if reviews|length == 0 %}
-            <p>There are no reviews here</p>
-        {% endif %}
-        <!--Display reviews-->
-        {% for review in reviews %}
-            <div class="card p-0 m-1 col-sm-4 recipe-card">
-              <div class="card-body">
-                <h5 class="card-title"><a href="{% url 'viewrecipe' review.recipe.id %}">{{review.recipe.title}}</a></h5>
-                <p>{{review.rating}} out of 5 stars</p>
-                <p>{{review.review}}</p>
-                {% if user.is_authenticated and review.user == user  %}
-                    <a href="{% url 'deletereview' review.id %}">Delete Review</a>
-                {% endif %}
-              </div>
+            <!--Delete Review Modal-->
+            <div id = "delete-review" class="modal">
+                <div class = "close-bar">
+                    <button class="close-modal btn btn-danger">&#10006;</button>
+                </div>
+                <div class = "delete-review-container">
+                    <p>Are you sure you would like to delete this review?</p>
+                    <div class = "p-1 card">
+                        <a id="confirm-delete-review" href="#" class="btn btn-danger">Delete Review</a>
+                    </div>
+                </div>
             </div>
-        {% endfor %}
         </div>
-        <h2>My Comments</h2>
-        <div class = "row">
-        {% if comments|length == 0 %}
-            <p>There are no comments here</p>
-        {% endif %}
-        <!--Display comments-->
-        {% for comment in comments %}
-            <div class="card p-0 m-1 col-sm-4 recipe-card">
-              <div class="card-body">
-                <h5 class="card-title"><a href="{% url 'viewrecipe' comment.recipe.id %}">{{comment.recipe.title}}</a></h5>
-                <p>{{comment.comment}}</p>
-                <a href="{% url 'deletecomment' comment.id %}">Delete Comment</a>
-              </div>
+        <div id="profile_comments" class="profile_section">
+            <h2>Comments</h2>
+            <div class = "row">
+            {% if comments|length == 0 %}
+                <p>There are no comments here</p>
+            {% endif %}
+            <!--Display comments-->
+            {% for comment in comments %}
+                <div class="col-sm-4 pt-2 recipe-card">
+                <div class="card card-body">
+                    <h5 class="card-title"><a href="{% url 'viewrecipe' comment.recipe.id %}">{{comment.recipe.title}}</a></h5>
+                    <p>{{comment.comment}}</p>
+                    {% if user.is_authenticated and comment.user == user  %}
+                        <button class="delete-comment-button btn btn-danger mt-3" data-comment-id="{{comment.id}}">Delete Comment</button>
+                    {% endif %}
+                </div>
+                </div>
+            {% endfor %}
             </div>
-        {% endfor %}
+            <!--Delete comment Modal-->
+            <div id = "delete-comment" class="modal">
+                <div class = "close-bar">
+                    <button class="close-modal btn btn-danger">&#10006;</button>
+                </div>
+                <div class = "delete-comment-container">
+                    <p>Are you sure you would like to delete this comment?</p>
+                    <div class = "p-1 card">
+                        <a id="confirm-delete-comment" href="#" class="btn btn-danger">Delete Comment</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

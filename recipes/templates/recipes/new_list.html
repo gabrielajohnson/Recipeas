@@ -2,10 +2,10 @@
 {% load static %}
 
 {% block body %}
-    <div class = "container">
-        <h1>Create List</h1>
+    <div class = "container create-a-list">
+        <h1>Create a Recipe List</h1>
         <!--Create Recipe List-->
-        <form action="{% url 'createlist' %}" method="post">
+        <form action="{% url 'createlist' %}" method="post" class="create-recipe-list">
         	{% csrf_token %}
         	{{ form }}
         	<input class="btn btn-danger mt-3" type="submit" value="Save List">
@@ -17,17 +17,46 @@
         {% if recipeList|length == 0 %}
     			<p>You have created no recipe lists</p>
     	{% else %}
-        {% for list in recipeList %}
-            <div class="card p-0 m-1 col-sm-4 recipe-card">
-              <div class="card-body">
-                <h5 class="card-title"><a href="{% url 'viewrecipelist' list.id %}">{{list.name}}</a></h5>
-                <!--Only display edit button if the user is logged in and it is their list-->
-                {% if user.is_authenticated and list.user == user  %}
-                	<button data-id="{{list.id}}" class="btn btn-danger edit-list-button">Edit List</button>
-                {% endif %}
-              </div>
+            {% for list in recipeList %}
+                <div class="col-sm-4 pt-2 recipe-card">
+                <div class="card card-body">
+                    <h5 class="card-title"><a href="{% url 'viewrecipelist' list.id %}">{{list.name}}</a></h5>
+                    <!--Add edit button if user logged in and same as list-->
+                    {% if user.is_authenticated and list.user == user  %}
+                        <button data-list-id="{{list.id}}" class="btn btn-danger edit-list-button">Edit List</button>
+                    {% endif %}
+                </div>
+                </div>
+            {% endfor %}
+            <div id = "edit-recipe-list" class="modal">
+                <div class = "close-bar">
+                    <button class="close-modal btn btn-danger">&#10006;</button>
+                </div>
+                <div class = "edit-recipe-list-container">
+                    <p>Edit Recipe List</p>
+                    <input type="type" id="recipe-list-name" name="list name"/>
+                    <label for="list name">Name</label>
+                    <input type="checkbox" id="list-public-status" name="public status"/>
+                    <label for="public status">Public Status</label>
+                    <div class = "col-md-12 row">
+                        <a id="delete-recipe-list" href="#" class="btn btn-danger">Delete List</a>
+                        <a id="save-recipe-list" href="#" class="btn btn-danger">Save List</a>
+                    </div>
+                </div>
+            </div> 
+            <!--Delete Review Modal-->
+            <div id = "delete-recipe-list-modal" class="modal">
+                <div class = "close-bar">
+                    <button class="close-modal btn btn-danger">&#10006;</button>
+                </div>
+                <div class = "delete-recipe-list-container">
+                    <p>Are you sure you would like to delete this review?</p>
+                    <div class = "p-1 card">
+                        <a id="confirm-delete-recipe-list" href="#" class="btn btn-danger">Delete Recipe List</a>
+                    </div>
+                </div>
             </div>
-        {% endfor %}
         {% endif %}
+    </div>
     </div>
 {% endblock %}

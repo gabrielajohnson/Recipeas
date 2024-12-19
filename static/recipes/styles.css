@@ -1,6 +1,10 @@
 :root {
   --mainRed: #d00000;
+  --lightMainRed: rgba(216,49,29,0.50);
+}
 
+html{
+	scroll-padding-top: 140px;
 }
 
 html, body{
@@ -12,7 +16,8 @@ body{
 }
 
 .body{
-    padding-top: 76px;
+    margin-top: 100px;
+    min-height: 100%;
 }
 
 img{
@@ -26,6 +31,10 @@ img{
 
 .recipe-card{
 	width:auto;
+}
+
+.recipe-page-card .card-title a{
+	color: var(--mainRed);
 }
 
 .card-img-container img{
@@ -42,6 +51,15 @@ img{
     height: 48px;
 }
 
+/*Search Bar*/
+input.search{
+		border: 1px solid grey;
+    border-radius: 5px;
+    padding: 5px 0px;
+    text-indent: 10px;
+    vertical-align: middle;
+}
+
 /*homepage*/
 .homepage-hero{
 	height: 400px;
@@ -54,8 +72,16 @@ img{
 	height:50px;
 }
 
+.category nav{
+	border-right: 1px solid var(--mainRed);
+}
+
 .category.row{
-	height:100%;
+	min-height: 100vh
+}
+
+.category .nav-item a{
+	color: var(--mainRed);
 }
 
 /*modal*/
@@ -73,6 +99,18 @@ img{
 	min-width: 300px;
 }
 
+/* Delete Modals*/
+#delete-recipe, #delete-review, #delete-comment{
+	top: 5%;
+	height:50%;
+	max-width: 500px;
+	min-width: 250px;
+}
+
+.delete-recipe-container, .delete-review-container, .delete-comment-container{
+	padding: 20px;
+	overflow-y:auto;
+}
 
 .form-container{
 	width: 80%;
@@ -90,6 +128,11 @@ img{
 	height:40px;
 }
 
+#star-rating{
+	width: 100px;
+  /*background: linear-gradient(90deg, var(--mainRed) 0%, var(--mainRed) 50%, transparent 50%);*/
+}
+
 .star-container {
   display: block;
   position: relative;
@@ -98,7 +141,6 @@ img{
 }
 
 .main-menu{
-	/*background:var(--mainRed);*/
 	background: white;
 }
 
@@ -155,17 +197,8 @@ img{
 	height:90%;
 }
 
+
 .review-container{
-	height:80%;
-	overflow-y:auto;
-}
-
-#delete-recipe{
-	top: 5%;
-	height:90%;
-}
-
-.delete-recipe-container{
 	height:80%;
 	overflow-y:auto;
 }
@@ -173,6 +206,133 @@ img{
 /*Close Bar*/
 .close-bar{
 	background: lightgray;
+	font-family: 'Zapf Dingbats';
+}
+
+
+/*Profile*/
+
+.profile_menu{
+	position: fixed;
+  width: 100%;
+  background: white;
+  z-index: 1000;
+  top: 76px;
+}
+
+.profile_menu ul{
+	list-style-type: none;
+}
+
+.profile_menu li.nav-item {
+    background: var(--mainRed);
+    border-radius: 20px;
+    width: 150px;
+    text-align: center;
+}
+
+.profile_menu li.nav-item a{
+    color: white;
+}
+
+.profile_container{
+	padding-top: 150px;
+}
+
+.profile_section{
+	margin-bottom: 50px;
+}
+
+/* Recipe */
+
+/*.recipe{
+	padding-top: 100px;
+}*/
+
+.recipe .main-image{
+  height: 500px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.recipe .recipe-creator a{
+	color: var(--mainRed);
+	font-weight: bold;
+}
+
+.recipe .time-banner{
+	background: var(--lightMainRed);
+	border: 3px solid #D8311D;
+	border-radius: 8px;
+	font-family: Calibri-Bold;
+	font-size: 1rem;
+	color: #FFFFFF;
+	letter-spacing: 0;
+	text-align: center;
+	display:flex;
+	justify-content: space-around;
+	align-items: center;
+	padding: 5px;
+}
+
+.recipe .time-banner p, .recipe .time-banner div p{
+	margin: 0;
+	text-align: center;
+}
+
+.recipe .time-banner .line{
+	height: 40px;
+  border: 1px solid #FFFFFF;
+}
+
+.recipe-inspiration.line{
+	border: 1px solid var(--mainRed);
+	width: 30%;
+}
+
+.recipe .comments .user a{
+	color: var(--mainRed);
+}
+
+/* Create a list */
+
+.create-recipe-list{
+    background: rgb(187 187 187 / 18%);
+    border: 2px solid #bababa;
+    border-radius: 8px;
+    font-family: Calibri-Bold;
+    font-size: 16px;
+    color: #4A4A4A;
+    letter-spacing: 0;
+    padding: 15px;
+    width: 60%;
+}
+
+.create-a-list h2{
+	padding-top: 50px;
+}
+
+.create-recipe-list input[name="public"]{
+		width: 30px;
+}
+
+footer{
+	background: var(--lightMainRed);
+	width: 100%;
+	height: 70px;
+	display: flex;
+	justify-content: right;
+	align-items: center;
+}
+
+footer a{
+	color: white;
+}
+
+footer a:hover{
+	color: white;
 }
 
 
@@ -182,7 +342,7 @@ img{
 	}
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 760px) {
 
   .category.row{
 	height:auto;
@@ -194,5 +354,9 @@ img{
 
   .mobile{
   	display:block;
+  }
+
+  .create-recipe-list{
+  	width: 100%;
   }
 }

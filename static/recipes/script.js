@@ -39,6 +39,31 @@ document.addEventListener('DOMContentLoaded', function() {
 		document.querySelector("#delete-recipe .close-bar .close-modal").addEventListener("click", closeModal);
 	}
 
+	// Delete Review
+	if(document.querySelector("#delete-review")){
+		// Open and close delete review modal
+		document.querySelector("#delete-review").style.display = "none";
+		for(let i = 0; i < document.querySelectorAll(".delete-review-button").length; i++){
+			document.querySelectorAll(".delete-review-button")[i].addEventListener("click",deleteReview);
+		}
+		document.querySelector("#delete-review .close-bar .close-modal").addEventListener("click", closeModal);
+	}
+
+	// Delete Comment
+	if(document.querySelector("#delete-comment")){
+		// Open and close delete comment modal
+		document.querySelector("#delete-comment").style.display = "none";
+		for(let i = 0; i < document.querySelectorAll(".delete-comment-button").length; i++){
+			document.querySelectorAll(".delete-comment-button")[i].addEventListener("click",deleteComment);
+		}
+		document.querySelector("#delete-comment .close-bar .close-modal").addEventListener("click", closeModal);
+	}
+
+	document.querySelector("#edit-recipe-list .close-bar .close-modal").addEventListener("click", closeModal);
+
+	// Edit Recipe List
+	document.querySelector("#save-recipe-list").addEventListener("click", saveRecipeList);
+
 	// Captures all edit buttons on page
 	let editButtons = document.querySelectorAll(".edit-list-button");
 	
@@ -46,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	for (let i = 0; i < editButtons.length; i++) {
 	    editButtons[i].addEventListener("click", editRecipeList);
 	}
+
 
 });
 
@@ -86,7 +112,6 @@ function checkStar(){
 	for(let k = 1; k < starLength; k++){
 		document.querySelector("#star" + k + " ~" + " .checkmark").style.background = "gold";
 	}
-
 }
 
 // Opens View Reviews Modal
@@ -104,110 +129,72 @@ function closeModal(){
 	this.parentNode.parentNode.style.display = "none";
 }
 
-
 function editRecipeList(){
-	// Prevents the edit post button from opening multiple forms 
-	// By checking if the post content is already hidden
-	if(this.parentNode.querySelector("h5").style.display != "none"){
+	document.querySelector("#edit-recipe-list").style.display = "block";
 
-		// Creates Edit Form
-		let editForm = document.createElement("form");
+	let recipeListId = this.getAttribute("data-list-id");
+	document.querySelector("#save-recipe-list").setAttribute("data-list-id", recipeListId);
 
-		// Creates textbox for edit
-		let editTextbox = document.createElement("input");
-		editTextbox.classList.add("d-block","mb-1","w-100");
-		editTextbox.type = "text";
-		editTextbox.value = this.parentNode.querySelector("h5").innerText;
-		let recipeListId = this.getAttribute("data-id");
+	let recipeListName = document.querySelector("#recipe-list-name");
+	let publicStatus = document.querySelector("#list-public-status");
 
-		//Create checkbox for public status
-		let publicStatus = document.createElement("input");
-		publicStatus.classList.add("d-block","mb-1","w-100");
-		publicStatus.type = "checkbox";
+	fetch('/editlist/' + recipeListId + '/status')
+	.then(response => response.json())
+	.then(status=> {
+		recipeListName.value = status.name;
+		publicStatus.checked = status.status;
+	});
 
-		fetch('/editlist/' + recipeListId + '/status')
-		.then(response => response.json())
-		.then(status=> {
-			if(status.status){
-				publicStatus.checked = true;
-			}
-		});
 
-		// Creates save changes button and adds function to save the edit
-		let saveChanges = document.createElement("input");
-		saveChanges.value = "Save Changes";
-		saveChanges.type = "button";
-		saveChanges.classList.add("btn","btn-outline-success","m-1");
-		saveChanges.addEventListener("click",() => saveRecipeList(this.parentNode,editTextbox,recipeListId,publicStatus));
-		
-		// Creates cancel button so the user can cancel the changes and revert the post back to its prior state
-		let cancel = document.createElement("button");
-		cancel.innerHTML = "Cancel";
-		cancel.addEventListener("click",() => cancelEdit(cancel,this.parentNode));
-		cancel.classList.add("btn","btn-outline-danger","m-1");
-
-		// Creates delete list button so the user can cancel the changes and revert the post back to its prior state
-		let deleteList = document.createElement("button");
-		deleteList.innerHTML = "Delete List";
-		deleteList.addEventListener("click",() => deleteRecipeList(this.parentNode,editTextbox,recipeListId));
-		deleteList.classList.add("btn","btn-outline-danger","m-1");
-
-		// All elements are appended to the form
-		editForm.append(editTextbox);
-		editForm.append(publicStatus);
-		editForm.append(saveChanges);
-		editForm.append(deleteList);
-		editForm.append(cancel);
-
-		// Hides original post text and appends editForm for user to view
-		this.parentNode.querySelector("h5").style.display = "none";
-		this.parentNode.append(editForm);
-	}
+	document.querySelector("#delete-recipe-list").addEventListener("click", function(){ deleteRecipeList(recipeListId); });
 }
 
-async function saveRecipeList(listContainer,editTextbox,recipeListId,publicStatus){
+async function saveRecipeList(){
 	// Gets new content and creates token
-	let newContent = editTextbox.value;
-	let status = publicStatus.checked;
+	let recipeListId = this.getAttribute("data-list-id");
+	let listContainer = document.querySelector('button[data-list-id="'+recipeListId+'"]').parentNode;
+	let listContainerTitle = listContainer.querySelector('.card-title a');
 	let token = getCookie('csrftoken');
 	// Saves info from edit textbox to recipe
+	let recipeListName = document.querySelector("#recipe-list-name").value;
+	let publicStatus = document.querySelector("#list-public-status").checked;
+
 	await fetch('/editlist/' + recipeListId, {
 		  headers: {
 			'X-CSRFToken': token
 		  },
           method: 'PUT',
           body: JSON.stringify({
-                name: newContent,
-                public: status
+                name: recipeListName,
+                public: publicStatus
           })
     });
-    // Removes textbox form after save
-    editTextbox.parentNode.remove();
-	listContainer.querySelector("h5").style.display = "block";
-	listContainer.querySelector("h5 a").innerText = newContent;
+
+	listContainerTitle.innerHTML = recipeListName;
+    document.querySelector("#edit-recipe-list").style.display = "none";
 }
 
-async function deleteRecipeList(listContainer,editTextbox,recipeListId){
-
-	await fetch('/deletelist/' + recipeListId)
-    	.then(response => response.json())
-    	.then(data => {
-      	console.log(data);
-	});
-
-    // Removes textbox form after save
-    editTextbox.parentNode.remove();
-	listContainer.querySelector("h5").style.display = "block";
-	listContainer.querySelector("h5 a").innerText = newContent;
-}
-
-function cancelEdit(cancel,listContainer){
-	// Cancel edit, will remove editForm and display original post text
-	cancel.parentNode.remove();
-	listContainer.querySelector("h5").style.display = "block";
-}
-
-// Opens View Reviews Modal
+// Opens Delete Recipe Modal
 function deleteRecipe(){
 	document.querySelector("#delete-recipe").style.display = "block";
+}
+
+// Opens Delete Recipe List Modal
+function deleteRecipeList(recipeListId){
+	document.querySelector("#delete-recipe-list-modal").style.display = "block";		  
+	document.querySelector("#confirm-delete-recipe-list").setAttribute("href", "/deletelist/" + recipeListId);
+}
+
+// Opens Delete Review Modal
+function deleteReview(){
+	document.querySelector("#delete-review").style.display = "block";
+	let reviewId = this.getAttribute("data-review-id");
+	document.querySelector("#confirm-delete-review").setAttribute("href", "/deletereview/" + reviewId);
+}
+
+// Opens Delete Review Modal
+function deleteComment(){
+	document.querySelector("#delete-comment").style.display = "block";
+	let commentId = this.getAttribute("data-comment-id");
+	document.querySelector("#confirm-delete-comment").setAttribute("href", "/deletecomment/" + commentId);
 }
